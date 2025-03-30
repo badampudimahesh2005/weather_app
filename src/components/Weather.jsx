@@ -180,7 +180,7 @@ const Weather = () => {
                         </div>
                          <button
                              onClick={() => handleSearch(lastSearchedCity)}
-                             className="mt-5 bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-md shadow-md transition duration-200"
+                             className="mt-3 bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-md shadow-md transition duration-200"
                          >
                              Refetch Weather
                          </button>

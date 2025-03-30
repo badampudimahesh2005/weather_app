@@ -3,7 +3,7 @@ import Weather from "./components/Weather"
 
 const App = () => {
   return (
-    <div className='h-[100vh] w-[100vw]  font-poppins'>
+    <div className='min-h-screen w-full font-poppins'>
       <Weather />
       <ToastContainer />
       </div>
