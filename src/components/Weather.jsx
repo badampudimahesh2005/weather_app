@@ -84,28 +84,27 @@ const Weather = () => {
 
    
          return (
-            <div className={`align-self-center p-10 bg-gradient-to-t ${
-              theme === "light" ? "from-white to-gray-500" : "from-black to-black"
-            } flex items-center flex-col w-full min-h-screen sm:h-full `}>
-        
+            <div className={`align-self-center p-4 sm:p-10 bg-gradient-to-t ${
+                theme === "light" ? "from-white to-gray-500" : "from-black to-black"
+              } flex items-center flex-col w-full min-h-screen sm:h-full`}>
+              
                 {/* Toggle Theme Button */}
                 <button
                     onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-                    className="absolute top-5 right-5 bg-gray-800 text-white px-4 py-2 rounded-md"
+                    className="absolute top-3 right-5 bg-gray-800 text-white px-4 py-2 rounded-md"
                 >
                     {theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}
                 </button>
         
                 {/* Search Bar */}
-                <div className="flex items-center gap-2 sm:gap-4 mt-10 sm:mt-0">
-                    <input
-                        ref={inputRef}
-                        type="text"
-                        placeholder="Search..."
-                        className={`h-[40px] sm:h-[50px] outline-none rounded-[20px] ${
-                          theme === "light" ? " bg-[#ebfffc]" : "bg-white/75"
-                        } border-none pl-4 sm:pl-6 text-black`}
-                    />
+                <div className="flex items-center gap-2 sm:gap-4 mt-10 sm:mt-0 ">
+                     <input
+                         ref={inputRef}
+                         type="text"
+                         placeholder="Search..."
+                         className={`h-[40px] sm:h-[50px] outline-none rounded-[20px] ${theme === "light" ? " bg-[#ebfffc]" : "bg-white/75"
+                             } border-none pl-2 sm:pl-6 text-black flex-1`}
+                     />
         
                     <img 
                         src={searchIcon} 
@@ -153,7 +152,7 @@ const Weather = () => {
                         <p className={`text-[20px] mt-[-5px] ${theme === "light" ? "text-black" : "text-white"}`}>
                             {weatherData?.description}
                         </p>
-                        <p className={`text-[80px] ${theme === "light" ? "text-black" : "text-white"}`}>
+                        <p className={`text-[60px] sm:text-[80px] ${theme === "light" ? "text-black" : "text-white"}`}>
                             {weatherData?.temperature}°C
                         </p>
                         <p className={`text-[40px] ${theme === "light" ? "text-black" : "text-white"}`}>
@@ -162,25 +161,25 @@ const Weather = () => {
         
                         {/* Weather Details */}
                         <div className="w-full mt-[40px] flex justify-between items-center">
-                            <div className="flex items-start gap-3 text-[22px]">
+                            <div className="flex items-start gap-3 text-[16px] sm:text-[22px]">
                                 <img src={theme =="light"?humidityIconDark:humidityIcon} alt="humidity icon" className="w-[26px] mt-[10px] k " />
                                 <div>
                                     <p className={`${theme === "light" ? "text-black" : "text-white"}`}>{weatherData?.humidity}%</p>
-                                    <p className={`text-[16px] ${theme === "light" ? "text-black" : "text-gray-300"}`}>Humidity</p>
+                                    <p className={`text-[14px] sm:text-[16px] ${theme === "light" ? "text-black" : "text-gray-300"}`}>Humidity</p>
                                 </div>
                             </div>
         
-                            <div className="flex items-start gap-3 text-[22px]">
+                            <div className="flex items-start gap-3  text-[16px] sm:text-[22px]">
                                 <img src={theme =="light"?windIconDark:windIcon} alt="wind icon" className="w-[26px] mt-[10px]" />
                                 <div>
                                     <p className={`${theme === "light" ? "text-black" : "text-white"}`}>{weatherData?.windSpeed} km/h</p>
-                                    <p className={`text-[16px] ${theme === "light" ? "text-black" : "text-gray-300"}`}>Windspeed</p>
+                                    <p className={` text-[14px] sm:text-[16px] ${theme === "light" ? "text-black" : "text-gray-300"}`}>Windspeed</p>
                                 </div>
                             </div>
                         </div>
                          <button
                              onClick={() => handleSearch(lastSearchedCity)}
-                             className="mt-3 bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-md shadow-md transition duration-200"
+                             className="mt-2 bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-md shadow-md transition duration-200"
                          >
                              Refetch Weather
                          </button>
