@@ -53,7 +53,7 @@ const Weather = () => {
 
             //if the city is wrong or not found ,this throws an error
            if(!response.ok){
-            throw new Error('City not found');
+            throw new Error('Error in fetching the data');
            }
 
            //storing the needed report data in the state
@@ -94,20 +94,20 @@ const Weather = () => {
                 </button>
         
                 {/* Search Bar */}
-                <div className="flex items-center gap-4 mt-10 sm:mt-0">
+                <div className="flex items-center gap-2 sm:gap-4 mt-10 sm:mt-0">
                     <input
                         ref={inputRef}
                         type="text"
                         placeholder="Search..."
-                        className={`h-[50px] outline-none rounded-[20px] ${
+                        className={`h-[40px] sm:h-[50px] outline-none rounded-[20px] ${
                           theme === "light" ? " bg-[#ebfffc]" : "bg-white/75"
-                        } border-none pl-6 text-black`}
+                        } border-none pl-4 sm:pl-6 text-black`}
                     />
         
                     <img 
                         src={searchIcon} 
                         alt="search icon" 
-                        className={`w-[50px] p-[15px] rounded-full ${
+                        className={`w-[40px] sm:w-[50px] p-[15px] rounded-full ${
                           theme === "light" ? " bg-[#ebfffc]" : "bg-white/75"
                         } cursor-pointer`}
                         onClick={handleSearch} 
@@ -115,7 +115,7 @@ const Weather = () => {
                 </div>
         
                 {/* Search History */}
-                <div className="mt-4 flex gap-2">
+                <div className="mt-4 flex gap-2 sm:gap-4 flex-wrap justify-center">
                     {searchHistory.map((city, index) => (
                         <button
                             key={index}
@@ -125,7 +125,7 @@ const Weather = () => {
                             }}
                             className={`${
                               theme === "dark" ? "bg-white/25 text-white" : "bg-gray-200 text-black"
-                            } px-3 py-1 rounded-md cursor-pointer`}
+                            } px-3 py-1 rounded-md cursor-pointer `}
                         >
                             {city}
                         </button>
