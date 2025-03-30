@@ -17,6 +17,8 @@ const Weather = () => {
    const [searchHistory, setSearchHistory] = useState(
        JSON.parse(localStorage.getItem("searchHistory")) || []
      );
+     const [lastSearchedCity, setLastSearchedCity] = useState("");
+
 
     const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
 
@@ -31,9 +33,9 @@ const Weather = () => {
     
       }
 
-    const handleSearch = async () => {
+    const handleSearch = async (cityName = inputRef.current.value.trim()) => {
        
-            const cityName = inputRef.current.value.trim();
+          
 
             //check if the input is empty or not , if empty show error and return
            if(!cityName){
@@ -41,6 +43,7 @@ const Weather = () => {
             return;
            }
 
+           setLastSearchedCity(cityName);
            //addind loading state 
            setLoading(true);
            try{
@@ -83,7 +86,7 @@ const Weather = () => {
          return (
             <div className={`align-self-center p-10 bg-gradient-to-t ${
               theme === "light" ? "from-white to-gray-500" : "from-black to-black"
-            } flex items-center flex-col w-full h-full`}>
+            } flex items-center flex-col w-full `}>
         
                 {/* Toggle Theme Button */}
                 <button
@@ -110,12 +113,16 @@ const Weather = () => {
                         className={`w-[40px] sm:w-[50px] p-[15px] rounded-full ${
                           theme === "light" ? " bg-[#ebfffc]" : "bg-white/75"
                         } cursor-pointer`}
-                        onClick={handleSearch} 
+                        onClick={() => {
+                            handleSearch(inputRef.current.value.trim())
+                            
+                        } 
+                    }
                     />
                 </div>
         
                 {/* Search History */}
-                <div className="mt-4 flex gap-2 sm:gap-4 flex-wrap justify-center">
+                <div className="mt-4 flex gap-1 sm:gap-4 flex-wrap justify-center">
                     {searchHistory.map((city, index) => (
                         <button
                             key={index}
@@ -171,6 +178,14 @@ const Weather = () => {
                                 </div>
                             </div>
                         </div>
+                         <button
+                             onClick={() => handleSearch(lastSearchedCity)}
+                             className="mt-5 bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-md shadow-md transition duration-200"
+                         >
+                             Refetch Weather
+                         </button>
+
+
                     </>
                 )}
             </div>
