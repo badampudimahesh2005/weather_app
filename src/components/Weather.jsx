@@ -86,7 +86,7 @@ const Weather = () => {
          return (
             <div className={`align-self-center p-10 bg-gradient-to-t ${
               theme === "light" ? "from-white to-gray-500" : "from-black to-black"
-            } flex items-center flex-col w-full `}>
+            } flex items-center flex-col w-full min-h-screen sm:h-full `}>
         
                 {/* Toggle Theme Button */}
                 <button
