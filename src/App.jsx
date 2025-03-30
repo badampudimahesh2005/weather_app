@@ -1,12 +1,15 @@
+import { ToastContainer } from "react-toastify"
 import Weather from "./components/Weather"
 
 const App = () => {
   return (
-    <div className='min-h-[100vh] bg-[#e2d4ff] flex flex-col items-center justify-center font-poppins'>
+    <div className='h-[100vh] w-[100vw]  font-poppins'>
       <Weather />
+      <ToastContainer />
       </div>
   )
 }
 
 export default App
 
+// bg-[#e2d4ff] 

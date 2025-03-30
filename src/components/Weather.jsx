@@ -2,115 +2,179 @@ import React, { useState , useEffect } from 'react'
 import { useRef } from 'react';
 
 import searchIcon from '../assets/search.png'
-// import clearIcon from '../assets/clear.png'
-// import rainIcon from '../assets/rain.png'
-// import snowIcon from '../assets/snow.png'
-// import cloudIcon from '../assets/cloud.png'
-// import drizzleIcon from '../assets/drizzle.png'
+import windIconDark from '../assets/windDark.png'
 import windIcon from '../assets/wind.png'
 import humidityIcon from '../assets/humidity.png'
+import humidityIconDark from '../assets/humidityBlack.png'
 import { toast } from 'react-toastify';
 
 const Weather = () => {
 
     const inputRef = useRef(null);
     const [weatherData, setWeatherData] = useState(false);
-  
-   
+    const [loading, setLoading] = useState(false);
+    const [theme, setTheme] = useState('light');
+   const [searchHistory, setSearchHistory] = useState(
+       JSON.parse(localStorage.getItem("searchHistory")) || []
+     );
 
     const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
 
 
 
     const toastStyle ={
-        theme:"dark",
+        theme:"light",
         position: "bottom-right",
         hideProgressBar: true,
         closeOnClick: true,
-        autoClose: 3000,
+        autoClose: 2000,
     
       }
 
-    const search = async (city) => {
-        try{
-            if(city === ''){
-                // toast.error('Please enter a city name', toastStyle);
-                alert('Please enter a city name');
-                return;
-            };
-            const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`);
+    const handleSearch = async () => {
+       
+            const cityName = inputRef.current.value.trim();
+
+            //check if the input is empty or not , if empty show error and return
+           if(!cityName){
+            toast.error('Please enter a city name', toastStyle);
+            return;
+           }
+
+           //addind loading state 
+           setLoading(true);
+           try{
+
+
+            const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&appid=${API_KEY}`);
 
             const data= await response.json();
             console.log(data);
 
+            //if the city is wrong or not found ,this throws an error
            if(!response.ok){
-            // throw new Error('City not found');
-            alert('City not found');
-            return;
+            throw new Error('City not found');
            }
 
+           //storing the needed report data in the state
             setWeatherData({
                 humidity: data?.main?.humidity,
                 windSpeed: data?.wind?.speed,
                 temperature: Math.floor(data?.main?.temp),
                 location: data?.name,
                 icon: data?.weather[0]?.icon,
+                description: data?.weather[0]?.description,
 
             });
-            // setCity('');
             inputRef.current.value = '';
-        }catch(err){
-            setWeatherData(false);
-            // toast.error(err.message, toastStyle);
-            alert(err.message);
-        }   
 
-    }
+        const updatedHistory = [cityName, ...searchHistory].slice(0, 5);
+             setSearchHistory(updatedHistory);
+             localStorage.setItem("searchHistory", JSON.stringify(updatedHistory));
+           } catch (err) {
+             setWeatherData(null);
+             toast.error(err.message, toastStyle);
+           } finally {
+             setLoading(false);
+           }
+         };
 
-    useEffect(() => {
-        search(inputRef.current.value);
-    }
-    , []);
+   
+         return (
+            <div className={`align-self-center p-10 bg-gradient-to-t ${
+              theme === "light" ? "from-white to-gray-500" : "from-black to-black"
+            } flex items-center flex-col w-full h-full`}>
+        
+                {/* Toggle Theme Button */}
+                <button
+                    onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+                    className="absolute top-5 right-5 bg-gray-800 text-white px-4 py-2 rounded-md"
+                >
+                    {theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}
+                </button>
+        
+                {/* Search Bar */}
+                <div className="flex items-center gap-4 mt-10 sm:mt-0">
+                    <input
+                        ref={inputRef}
+                        type="text"
+                        placeholder="Search..."
+                        className={`h-[50px] outline-none rounded-[20px] ${
+                          theme === "light" ? " bg-[#ebfffc]" : "bg-white/75"
+                        } border-none pl-6 text-black`}
+                    />
+        
+                    <img 
+                        src={searchIcon} 
+                        alt="search icon" 
+                        className={`w-[50px] p-[15px] rounded-full ${
+                          theme === "light" ? " bg-[#ebfffc]" : "bg-white/75"
+                        } cursor-pointer`}
+                        onClick={handleSearch} 
+                    />
+                </div>
+        
+                {/* Search History */}
+                <div className="mt-4 flex gap-2">
+                    {searchHistory.map((city, index) => (
+                        <button
+                            key={index}
+                            onClick={() => {
+                                inputRef.current.value = city;
+                                handleSearch();
+                            }}
+                            className={`${
+                              theme === "dark" ? "bg-white/25 text-white" : "bg-gray-200 text-black"
+                            } px-3 py-1 rounded-md cursor-pointer`}
+                        >
+                            {city}
+                        </button>
+                    ))}
+                </div>
     
-  return (
-    <div className='align-self-center p-10 rounded-[10px] bg-gradient-to-t from-[#2f4680] to-[#500ae4] flex items-center flex-col ' >
-
-        {/* search bar */}
-        <div className='flex items-center gap-3'> 
-            <input ref={inputRef}  type="text" placeholder='Search...' className='h-[50px] outline-none rounded-[40px] text-[#626262] bg-[#ebfffc] border-none pl-6' />
-
-            <img src={searchIcon} alt="search icon" className='w-[50px]  p-[15px] rounded-full bg-[#ebfffc] cursor-pointer'  onClick={()=>search(inputRef.current.value)}/>
-        </div>
-
-       {weatherData? <>
-        {/* weather image*/}
-        <img src={`https://openweathermap.org/img/wn/${weatherData?.icon}@2x.png`} alt="weather icon" className='w-[150px] my-[30px] mx-0' />
-        <p className='text-white text-[80px]'>{weatherData?.temperature}°C</p>
-        <p className='text-white text-[40px]'>{weatherData?.location}</p>
-
-        {/* weather details */}
-        <div className='w-full mt-[40px] text-[#fff] flex justify-between items-center'>
-            <div className='flex items-start gap-3 text-[22px]'>
-                <img src={humidityIcon} alt="rain icon" className=' w-[26px] mt-[10px]' />
-                <div>
-                    <p className=''>{weatherData?.humidity}%</p>
-                    <p className='text-[16px]'>Humidity</p>
-                </div>
+    {/* Loading Spinner */}
+                {loading && (
+                    <div className="flex items-center justify-center mt-10">
+                        <div className={`animate-spin rounded-full h-8 w-8
+                            border-t-2 border-b-2 ${theme === "light" ? "border-gray-900" : "border-white"}`}></div>
+                    </div>
+                )}
+                {/* Weather Data */}
+                {weatherData && !loading && (
+                    <>
+                        <img src={`https://openweathermap.org/img/wn/${weatherData?.icon}@2x.png`} alt="weather icon" className="w-[150px] my-[30px] mx-0" />
+                        <p className={`text-[20px] mt-[-5px] ${theme === "light" ? "text-black" : "text-white"}`}>
+                            {weatherData?.description}
+                        </p>
+                        <p className={`text-[80px] ${theme === "light" ? "text-black" : "text-white"}`}>
+                            {weatherData?.temperature}°C
+                        </p>
+                        <p className={`text-[40px] ${theme === "light" ? "text-black" : "text-white"}`}>
+                            {weatherData?.location}
+                        </p>
+        
+                        {/* Weather Details */}
+                        <div className="w-full mt-[40px] flex justify-between items-center">
+                            <div className="flex items-start gap-3 text-[22px]">
+                                <img src={theme =="light"?humidityIconDark:humidityIcon} alt="humidity icon" className="w-[26px] mt-[10px] k " />
+                                <div>
+                                    <p className={`${theme === "light" ? "text-black" : "text-white"}`}>{weatherData?.humidity}%</p>
+                                    <p className={`text-[16px] ${theme === "light" ? "text-black" : "text-gray-300"}`}>Humidity</p>
+                                </div>
+                            </div>
+        
+                            <div className="flex items-start gap-3 text-[22px]">
+                                <img src={theme =="light"?windIconDark:windIcon} alt="wind icon" className="w-[26px] mt-[10px]" />
+                                <div>
+                                    <p className={`${theme === "light" ? "text-black" : "text-white"}`}>{weatherData?.windSpeed} km/h</p>
+                                    <p className={`text-[16px] ${theme === "light" ? "text-black" : "text-gray-300"}`}>Windspeed</p>
+                                </div>
+                            </div>
+                        </div>
+                    </>
+                )}
             </div>
-
-            <div className='flex items-start gap-3 text-[22px]'>
-                <img src={windIcon} alt="rain icon" className=' w-[26px] mt-[10px]' />
-                <div>
-                    <p className=''>{weatherData?.windSpeed} km/h</p>
-                    <p className=' text-[16px]'>Windspeed</p>
-                </div>
-            </div>
-        </div>
-
-        </> : <></>}
-
-    </div>
-  ) 
-}
-
-export default Weather
+        );
+    }
+    
+    export default Weather; 
